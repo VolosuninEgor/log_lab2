@@ -54,7 +54,7 @@ int main(void)
     for (int i = 0; i < 11; ++i){
         double sr = 0.0;
         for (int j = 0; j < 3; ++j) {
-            clock_t start, end; // объявляем переменные для определения времени выполнения
+            clock_t start, end; 
             start = clock();
             matrix_mul(arr_n[i]);
             end = clock();

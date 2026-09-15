@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 100000
+//#define N 100000
 
 void shell(int *items, int count)
 {
@@ -41,28 +41,28 @@ void qs(int *items, int left, int right)
 }
 
 
-void gen_random(int* arr) {
+void gen_random(int* arr, int N) {
     for (int i = 0; i < N; ++i) {
         arr[i] = rand() % 1000 + 1;
     }
 }
 
 
-void gen_increasing(int* arr) {    // возрастающий
+void gen_increasing(int* arr, int N) {    // возрастающий
     arr[0] = rand() % 10 + 1;
     for (int i = 1; i < N; ++i) {
         arr[i] = arr[i-1] + rand() % 10 + 1;
     }
 }
 
-void gen_descending(int* arr) {    // убывающий
+void gen_descending(int* arr, int N) {    // убывающий
     arr[0] = 1000000 + (rand() % 9000000) + 1;
     for (int i = 1; i < N; ++i) {
         arr[i] = arr[i-1] - (rand() % 10 + 1);
     }
 }
 
-void gen_mix(int* arr){
+void gen_mix(int* arr, int N){
     arr[0] = rand() % 10 + 1; 
     for (int i = 1; i < N/2; ++i) {
         arr[i] = arr[i-1] + rand() % 10 + 1;
@@ -77,7 +77,7 @@ int compare(const void *a, const void *b)
     return (*(int *)a - *(int *)b);
 }
 
-double get_time_shell(int *arr)
+double get_time_shell(int *arr, int N)
 {
     clock_t start = clock();
     shell(arr, N);
@@ -85,7 +85,7 @@ double get_time_shell(int *arr)
     return (double)(end - start) / CLOCKS_PER_SEC;
 }
 
-double get_time_qs(int *arr)
+double get_time_qs(int *arr, int N)
 {
     clock_t start = clock();
     qs(arr, 0, N - 1);
@@ -93,7 +93,7 @@ double get_time_qs(int *arr)
     return (double)(end - start) / CLOCKS_PER_SEC;
 }
 
-double get_time_qsort(int *arr)
+double get_time_qsort(int *arr, int N)
 {
     clock_t start = clock();
     qsort(arr, N, sizeof(int), compare);
@@ -103,25 +103,31 @@ double get_time_qsort(int *arr)
 
 int main(void)
 {
+    int arr_n[3] = {10000, 100000, 1000000};
     srand(time(NULL));
-    int *arr = (int*)malloc(N * sizeof(int)); 
-    
-    printf("N = %d\n", N);
-    printf("тип массива:  shell     qs        qsort\n");
+        
+    for (int i = 0; i < 3; ++i) {
+        int N = arr_n[i];
+        int *arr = (int*)malloc(N * sizeof(int)); 
 
-    gen_random(arr);
-    printf("случайный:    %0.6f, %0.6f, %0.6f\n", get_time_shell(arr), get_time_qs(arr), get_time_qsort(arr));
+        printf("N = %d\n", N);
+        printf("тип массива:  shell     qs        qsort\n");
 
-    gen_increasing(arr);
-    printf("возрастающий: %0.6f, %0.6f, %0.6f\n", get_time_shell(arr), get_time_qs(arr), get_time_qsort(arr));
+        gen_random(arr, N);
+        printf("случайный:    %0.6f, %0.6f, %0.6f\n", get_time_shell(arr, N), get_time_qs(arr, N), get_time_qsort(arr, N));
 
-    gen_descending(arr);
-    printf("убывающий:    %0.6f, %0.6f, %0.6f\n",get_time_shell(arr), get_time_qs(arr), get_time_qsort(arr));
+        gen_increasing(arr, N);
+        printf("возрастающий: %0.6f, %0.6f, %0.6f\n", get_time_shell(arr, N), get_time_qs(arr, N), get_time_qsort(arr, N));
 
-    gen_mix(arr);
-    printf("воз+убыв      %0.6f, %0.6f, %0.6f\n",get_time_shell(arr), get_time_qs(arr), get_time_qsort(arr));
+        gen_descending(arr, N);
+        printf("убывающий:    %0.6f, %0.6f, %0.6f\n",get_time_shell(arr, N), get_time_qs(arr, N), get_time_qsort(arr, N));
 
-    free(arr);
+        gen_mix(arr, N);
+        printf("воз+убыв      %0.6f, %0.6f, %0.6f\n",get_time_shell(arr, N), get_time_qs(arr, N), get_time_qsort(arr, N));
+
+        free(arr);
+}
+
     return 0;
 }
 
